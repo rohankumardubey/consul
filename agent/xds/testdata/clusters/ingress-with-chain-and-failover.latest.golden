@@ -3,8 +3,24 @@
   "resources": [
     {
       "@type": "type.googleapis.com/envoy.config.cluster.v3.Cluster",
-      "name": "db.default.dc1.internal.11111111-2222-3333-4444-555555555555.consul",
-      "altStatName": "db.default.dc1.internal.11111111-2222-3333-4444-555555555555.consul",
+      "name": "failover~db.default.dc1.internal.11111111-2222-3333-4444-555555555555.consul",
+      "altStatName": "failover~db.default.dc1.internal.11111111-2222-3333-4444-555555555555.consul",
+      "clusterType": {
+        "name": "envoy.clusters.aggregate",
+        "typedConfig": {
+          "@type": "type.googleapis.com/envoy.extensions.clusters.aggregate.v3.ClusterConfig",
+          "clusters": [
+            "failover~db.default.dc1.internal.11111111-2222-3333-4444-555555555555.consul",
+            "failover~fail.default.dc1.internal.11111111-2222-3333-4444-555555555555.consul"
+          ]
+        }
+      },
+      "connectTimeout": "33s"
+    },
+    {
+      "@type": "type.googleapis.com/envoy.config.cluster.v3.Cluster",
+      "name": "failover~fail.default.dc1.internal.11111111-2222-3333-4444-555555555555.consul",
+      "altStatName": "failover~fail.default.dc1.internal.11111111-2222-3333-4444-555555555555.consul",
       "type": "EDS",
       "edsClusterConfig": {
         "edsConfig": {
@@ -51,9 +67,6 @@
               "matchSubjectAltNames": [
                 {
                   "exact": "spiffe://11111111-2222-3333-4444-555555555555.consul/ns/default/dc/dc1/svc/db"
-                },
-                {
-                  "exact": "spiffe://11111111-2222-3333-4444-555555555555.consul/ns/default/dc/dc1/svc/fail"
                 }
               ]
             }
